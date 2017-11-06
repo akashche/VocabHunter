@@ -4,7 +4,7 @@ language:
   - java
 
 jdk:
-  - oraclejdk8
+  - oraclejdk9
 
 os:
   - linux
@@ -20,7 +20,6 @@ addons:
       - master
   apt:
     packages:
-      - oracle-java8-installer
       - fakeroot
 
 before_cache:
