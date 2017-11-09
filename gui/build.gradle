@@ -45,7 +45,7 @@ dependencies {
         exclude group: 'org.testfx', module: 'testfx-internal-java8'
     }
     testRuntime 'org.testfx:testfx-internal-java9:4.0.8-alpha'
-    testRuntime 'org.jfxtras:openjfx-monocle:1.8.0_20'
+    testRuntime 'org.testfx:openjfx-monocle:jdk-9+181'
     runtime 'org.codehaus.janino:janino:3.0.7'
 }
 
