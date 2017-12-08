@@ -41,12 +41,12 @@ dependencies {
     compile 'org.controlsfx:controlsfx:9.0.0'
     compile 'de.jensd:fontawesomefx-fontawesome:4.7.0-9'
     testCompile project(path: ':core', configuration: 'tests')
-    testCompile('org.testfx:testfx-core:4.0.8-alpha') {
+    testCompile('org.testfx:testfx-core:4.0.10-alpha') {
         exclude group: 'org.testfx', module: 'testfx-internal-java8'
     }
-    testRuntime 'org.testfx:testfx-internal-java9:4.0.8-alpha'
+    testRuntime 'org.testfx:testfx-internal-java9:4.0.10-alpha'
     testRuntime 'org.testfx:openjfx-monocle:jdk-9+181'
-    runtime 'org.codehaus.janino:janino:3.0.7'
+    runtime 'org.codehaus.janino:janino:3.0.8'
 }
 
 junitPlatform {
