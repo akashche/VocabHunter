@@ -16,7 +16,7 @@ allprojects {
 
 task wrapper(type: Wrapper) {
     description 'Setup the Gradle wrapper'
-    gradleVersion = '4.4'
+    gradleVersion = '4.4.1'
     distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
@@ -75,7 +75,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = '8.5'
+        toolVersion = '8.7'
         configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
     }
 
@@ -97,7 +97,7 @@ subprojects {
     }
 
     jacoco {
-        toolVersion = '0.7.9'
+        toolVersion = '0.8.0'
         applyTo junitPlatformTest
     }
 
