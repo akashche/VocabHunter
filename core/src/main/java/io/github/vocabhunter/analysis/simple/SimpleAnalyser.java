@@ -4,7 +4,7 @@
 
 package io.github.vocabhunter.analysis.simple;
 
-import io.github.vocabhunter.analysis.core.CoreTool;
+import io.github.vocabhunter.analysis.core.PreferredFormTool;
 import io.github.vocabhunter.analysis.model.Analyser;
 import io.github.vocabhunter.analysis.model.AnalysisResult;
 import io.github.vocabhunter.analysis.model.WordUse;
@@ -15,36 +15,34 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.inject.Singleton;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 @Singleton
 public class SimpleAnalyser implements Analyser {
     @Override
     public AnalysisResult analyse(final List<String> lines, final String name) {
-        Map<String, WordUse> map = IntStream.range(0, lines.size())
+        List<AnalysisRecord> records = IntStream.range(0, lines.size())
             .boxed()
-            .flatMap(n -> uses(lines, n))
-            .collect(toMap(
-                WordStreamTool::classifier,
-                identity(),
-                (w1, w2) -> new WordUse(w1, w2, false)));
-        List<WordUse> uses = map.values().stream()
-                .sorted(WordStreamTool.WORD_COMPARATOR)
-                .collect(toList());
+            .flatMap(i -> lineRecords(lines, i))
+            .collect(toList());
+        Map<String, String> identifiers = records.stream()
+            .collect(toMap(AnalysisRecord::getNormalised, AnalysisRecord::getIdentifier, PreferredFormTool::preferredForm));
+        Map<String, Long> counts = records.stream()
+            .collect(groupingBy(AnalysisRecord::getNormalised, counting()));
+        Map<String, List<Integer>> indices = records.stream()
+            .collect(groupingBy(AnalysisRecord::getNormalised, mapping(AnalysisRecord::getLine, toList())));
+        List<WordUse> uses = identifiers.entrySet().stream()
+            .map(e -> new WordUse(e.getValue(), counts.get(e.getKey()).intValue(), indices.get(e.getKey())))
+            .sorted(WordStreamTool.WORD_COMPARATOR)
+            .collect(toList());
 
         return new AnalysisResult(name, uses, lines);
     }
 
-    private Stream<WordUse> uses(final List<String> lines, final int lineNo) {
-        String line = lines.get(lineNo);
-        Map<String, WordUse> map = WordStreamTool.words(line)
-            .collect(toMap(
-                CoreTool::toLowerCase,
-                w -> new WordUse(w, lineNo),
-                (w1, w2) -> new WordUse(w1, w2, true)));
+    private Stream<AnalysisRecord> lineRecords(final List<String> lines, final int index) {
+        String line = lines.get(index);
 
-        return map.values().stream();
+        return WordStreamTool.words(line)
+            .map(w -> new AnalysisRecord(w, index));
     }
 }
