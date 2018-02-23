@@ -20,12 +20,6 @@ processResources {
     }
 }
 
-jar {
-    from(buildDir) {
-        include 'build-info.properties'
-    }
-}
-
 startScripts {
     doLast {
         unixScript.text = unixScript.text
@@ -48,8 +42,8 @@ dependencies {
         testRuntime 'org.testfx:testfx-internal-java9:4.0.11-alpha'
         testRuntime 'org.testfx:openjfx-monocle:jdk-9+181'
     } else {
-        testCompile 'org.testfx:testfx-core:4.0.11-alpha'
-        testCompile 'org.testfx:openjfx-monocle:8u76-b04'
+        compile 'org.testfx:testfx-core:4.0.11-alpha'
+        compile 'org.testfx:openjfx-monocle:8u76-b04'
     }
     runtime 'org.codehaus.janino:janino:3.0.8'
 }
@@ -67,3 +61,16 @@ junitPlatformTest {
         jvmArgs "-Dheadless=true"
     }
 }
+
+jar {
+    from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+    manifest {
+        attributes "Main-Class": "WICCrashReproducer"
+    }
+}
+
